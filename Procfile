@@ -1,1 +1,1 @@
-web: gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT backend.app.main:app
+web: gunicorn -w 2 -k uvicorn.workers.UvicornWorker --chdir backend -b 0.0.0.0:$PORT app.main:app

@@ -5,11 +5,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
+DEFAULT_SQLITE_PATH = BASE_DIR / "data" / "app.db"
 
 
 class Settings(BaseSettings):
     app_name: str = "Flashcard Engine API"
-    database_url: str = "sqlite:///./data/app.db"
+    database_url: str = f"sqlite:///{DEFAULT_SQLITE_PATH.as_posix()}"
     openrouter_api_key: str = ""
     openrouter_model: str = "openai/gpt-3.5-turbo"
     frontend_url: str = "http://localhost:3000"

@@ -6,9 +6,9 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.config import settings
 
 
-if settings.database_url.startswith("sqlite:///./"):
-    relative_path = settings.database_url.replace("sqlite:///./", "")
-    Path(relative_path).parent.mkdir(parents=True, exist_ok=True)
+if settings.database_url.startswith("sqlite:///"):
+    sqlite_path = settings.database_url.replace("sqlite:///", "", 1)
+    Path(sqlite_path).expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
 
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
 engine = create_engine(settings.database_url, connect_args=connect_args)
@@ -25,4 +25,3 @@ def get_db():
         yield db
     finally:
         db.close()
-

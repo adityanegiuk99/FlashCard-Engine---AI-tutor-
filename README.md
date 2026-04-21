@@ -25,7 +25,7 @@ Flashcard Engine is a full-stack study app that turns PDFs into reusable flashca
 - Framework: FastAPI
 - Storage: SQLite via SQLAlchemy
 - PDF parsing: PyMuPDF
-- AI layer: Google AI Studio Gemini API
+- AI layer: OpenRouter-compatible chat completions
 - Core logic:
   - `pdf_service.py`: extracts headings and content blocks from PDFs
   - `ai_service.py`: generates, explains, and regenerates flashcards
@@ -34,24 +34,25 @@ Flashcard Engine is a full-stack study app that turns PDFs into reusable flashca
 ## Folder structure
 
 ```text
-cuemath/
-├── backend/
-│   ├── app/
-│   │   ├── services/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   └── schemas.py
-│   ├── .env.example
-│   └── requirements.txt
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── lib/
-│   ├── .env.example
-│   └── package.json
-└── docs/
+flashcard-engine/
+|-- backend/
+|   |-- app/
+|   |   |-- services/
+|   |   |-- config.py
+|   |   |-- database.py
+|   |   |-- main.py
+|   |   |-- models.py
+|   |   `-- schemas.py
+|   |-- .env.example
+|   `-- requirements.txt
+|-- frontend/
+|   |-- app/
+|   |-- components/
+|   |-- lib/
+|   |-- .env.example
+|   `-- package.json
+|-- render.yaml
+`-- vercel.json
 ```
 
 ## Local setup
@@ -69,22 +70,13 @@ copy .env.example .env
 Fill `backend/.env`:
 
 ```env
-GEMINI_API_KEY=your_google_ai_studio_key
-GEMINI_MODEL=gemini-2.5-flash
+OPENROUTER_API_KEY=your_openrouter_api_key
+OPENROUTER_MODEL=openai/gpt-3.5-turbo
 FRONTEND_URL=http://localhost:3000
-DATABASE_URL=sqlite:///./data/app.db
+DATABASE_URL=sqlite:///C:/absolute/path/to/backend/data/app.db
 ```
 
-Free Gemini model options you can swap into `GEMINI_MODEL`:
-
-- `gemini-3-flash-preview`
-- `gemini-3.1-flash-lite-preview`
-- `gemini-3.1-flash-live-preview`
-- `gemini-2.5-pro`
-- `gemini-2.5-flash`
-- `gemini-2.5-flash-lite`
-
-The code defaults to `gemini-2.5-flash` because it is a solid stable choice for this workload.
+If `DATABASE_URL` is omitted, the app defaults to `backend/data/app.db`.
 
 Run the API:
 
@@ -116,15 +108,15 @@ npm run dev
 
 ### Frontend on Vercel
 
-1. Push the repo to GitHub.
-2. Import the `frontend` directory as a Vercel project.
-3. Set `NEXT_PUBLIC_API_URL` to your deployed backend URL.
+1. Import the GitHub repo into Vercel.
+2. Either set the project root to `frontend/` in the Vercel UI or keep the repo root and use the included root `vercel.json`.
+3. Add `NEXT_PUBLIC_API_URL=https://your-backend-service.onrender.com`.
 4. Deploy.
 
 ### Backend on Render
 
 1. Create a new Web Service from the same GitHub repo.
-2. Set the root directory to `backend`.
+2. Use the included `render.yaml`, or manually set the root directory to `backend`.
 3. Build command:
 
 ```bash
@@ -134,16 +126,16 @@ pip install -r requirements.txt
 4. Start command:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
+gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:$PORT app.main:app
 ```
 
 5. Add environment variables:
-  - `GEMINI_API_KEY`
-  - `GEMINI_MODEL`
+   - `OPENROUTER_API_KEY`
+   - `OPENROUTER_MODEL`
    - `FRONTEND_URL`
    - `DATABASE_URL`
 
-Use a persistent disk if you want SQLite data to survive restarts. If you want more reliable production persistence later, switch to Postgres.
+For Render + SQLite, mount a persistent disk and point `DATABASE_URL` at that disk, for example `sqlite:////var/data/app.db`. The included `render.yaml` already does this.
 
 ## Key decisions and tradeoffs
 
@@ -158,7 +150,7 @@ Use a persistent disk if you want SQLite data to survive restarts. If you want m
   - verify PDF upload rejects non-PDF files
   - verify a deck persists cards and summary blocks
   - verify Known/Unknown changes box and due date correctly
-  - mock Gemini responses for generation and explanation tests
+  - mock OpenRouter responses for generation and explanation tests
 - Frontend:
   - test upload flow
   - test card flip and review actions
@@ -175,27 +167,3 @@ Use a persistent disk if you want SQLite data to survive restarts. If you want m
 - card editing in bulk before first study session
 - stronger PDF structure extraction with OCR fallback
 - semantic duplicate-card removal and better source citations
-
-## Short write-up
-
-This MVP focuses on the learning loop, not just the upload moment. The product tries to make studying feel directed and useful: generate better cards, surface what is due, explain confusing concepts, and show progress that motivates another session.
-
-The biggest tradeoff was choosing speed and reliability over sophistication. I used a simple review algorithm, heuristic PDF structure parsing, and SQLite persistence so the app can be built and deployed quickly under time constraints while still feeling like a real product.
-
-## Video walkthrough outline
-
-Use this 2 to 5 minute structure:
-
-1. Problem: students reread PDFs but forget quickly.
-2. Solution: upload once, get concept-based cards, and come back to due reviews.
-3. Demo:
-   - upload a PDF
-   - open generated deck
-   - flip a card
-   - mark Known/Unknown
-   - show explanation and regenerate
-   - show progress and weak areas
-4. Decisions:
-   - why concept-rich cards matter
-   - why spaced repetition is built into the MVP
-   - why SQLite + FastAPI + Next.js kept delivery fast
