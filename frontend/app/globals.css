@@ -1,0 +1,264 @@
+:root {
+  --bg: #f6efe3;
+  --surface: rgba(255, 252, 247, 0.86);
+  --surface-strong: #fffaf2;
+  --text: #24170d;
+  --muted: #6e5a49;
+  --line: rgba(76, 46, 22, 0.12);
+  --accent: #d65a31;
+  --accent-dark: #9f3415;
+  --danger: #7a2323;
+  --success: #2f6f4d;
+  --shadow: 0 24px 60px rgba(88, 51, 21, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(214, 90, 49, 0.18), transparent 32%),
+    radial-gradient(circle at top right, rgba(238, 190, 107, 0.22), transparent 26%),
+    linear-gradient(180deg, #f9f3e7 0%, #f0e2c5 100%);
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+
+.hero,
+.home-grid,
+.study-layout {
+  display: grid;
+  gap: 24px;
+}
+
+.hero {
+  grid-template-columns: 1.6fr 1fr;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.hero h1,
+.flashcard-content h2,
+.upload-panel h2,
+.hero-panel h1 {
+  font-size: clamp(2.4rem, 4vw, 4.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.hero-copy,
+.muted {
+  color: var(--muted);
+}
+
+.hero-copy {
+  max-width: 50rem;
+  font-size: 1.05rem;
+}
+
+.hero-metrics,
+.stats-row,
+.action-row,
+.deck-card-header,
+.weak-area-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.metric-tile,
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.metric-tile {
+  min-width: 150px;
+  padding: 18px;
+}
+
+.metric-tile strong {
+  display: block;
+  font-size: 2rem;
+}
+
+.home-grid {
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  align-items: start;
+}
+
+.panel {
+  padding: 24px;
+}
+
+.upload-panel,
+.flashcard-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span,
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.field input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  background: var(--surface-strong);
+}
+
+.primary-button,
+.danger-button,
+.ghost-button {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+}
+
+.primary-button {
+  color: white;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+}
+
+.danger-button {
+  color: white;
+  background: linear-gradient(135deg, #8d3021, var(--danger));
+}
+
+.ghost-button {
+  color: var(--text);
+  background: rgba(255, 250, 242, 0.95);
+  border: 1px solid var(--line);
+}
+
+.primary-button:hover,
+.danger-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled,
+.danger-button:disabled,
+.ghost-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.deck-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.deck-card h3,
+.summary-list h3 {
+  margin: 4px 0 0;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(214, 90, 49, 0.08);
+  color: var(--accent-dark);
+  font-size: 0.9rem;
+}
+
+.tag.success {
+  background: rgba(47, 111, 77, 0.12);
+  color: var(--success);
+}
+
+.tag.danger {
+  background: rgba(122, 35, 35, 0.12);
+  color: var(--danger);
+}
+
+.study-layout {
+  grid-template-columns: 1.1fr 1.2fr 0.9fr;
+  align-items: start;
+}
+
+.flashcard {
+  min-height: 380px;
+  display: grid;
+  align-content: space-between;
+}
+
+.flashcard-content {
+  display: grid;
+  gap: 12px;
+}
+
+.flashcard-content h2 {
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.summary-list {
+  display: grid;
+  gap: 18px;
+}
+
+.summary-list ul {
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: var(--muted);
+}
+
+.error-text {
+  color: var(--danger);
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .hero,
+  .home-grid,
+  .study-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
