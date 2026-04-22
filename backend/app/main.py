@@ -22,9 +22,16 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title=settings.app_name, lifespan=lifespan)
+
+# Configure CORS origins
+cors_origins = ["http://localhost:3000", "http://localhost:3001"]
+frontend_url_clean = settings.frontend_url_clean
+if frontend_url_clean and frontend_url_clean != "http://localhost:3000":
+    cors_origins.append(frontend_url_clean)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:3000"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

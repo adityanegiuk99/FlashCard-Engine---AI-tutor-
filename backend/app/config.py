@@ -19,6 +19,11 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+    
+    @property
+    def frontend_url_clean(self) -> str:
+        """Return frontend URL without trailing slash"""
+        return self.frontend_url.rstrip('/')
 
 
 settings = Settings()
