@@ -24,9 +24,13 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title=settings.app_name, lifespan=lifespan)
 
 # Configure CORS origins
-cors_origins = ["http://localhost:3000", "http://localhost:3001"]
+cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://flash-card-engine-ai-tutor.vercel.app",  # Deployed frontend
+]
 frontend_url_clean = settings.frontend_url_clean
-if frontend_url_clean and frontend_url_clean != "http://localhost:3000":
+if frontend_url_clean and frontend_url_clean not in cors_origins:
     cors_origins.append(frontend_url_clean)
 
 app.add_middleware(
